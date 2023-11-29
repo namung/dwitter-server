@@ -17,6 +17,7 @@ const app = express();
 const corsOption = {
   origin: config.cors.allowedOrigin,
   optionsSuccessStatus: 200,
+  credential: true, // allow the Access-Control-Allow-Credentials. 서버에서 response할 때 이 header를 포함해야만 클라이언트에서는 서버의 모든 정보가 안전하다고 판단하여 자바스크립트 코드로 데이터를 전달함
 };
 
 // 미들웨어 설정

@@ -13,7 +13,7 @@ function required(key, defaultValue = undefined) {
 export const config = {
   jwt: {
     secretKey: required("JWT_SECRET"),
-    expiresInSec: parseInt(required("JWT_EXPIRES_SEC", 17280000)),
+    expiresInMs: parseInt(required("JWT_EXPIRES_MS", 17280000)),
   },
   bcrypt: {
     saltRound: parseInt(required("BCRYPT_SALT_ROUND", 12)),

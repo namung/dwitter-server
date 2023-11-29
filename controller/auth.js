@@ -4,7 +4,7 @@ import * as userRepository from "../data/auth.js";
 import { config } from "../config.js";
 
 const jwtSecretKey = config.jwt.secretKey;
-const jwtExpiresInDays = config.jwt.expiresInSec;
+const jwtExpiresInMs = config.jwt.expiresInMs;
 const bcryptSaltRounds = config.bcrypt.saltRound;
 
 export async function signup(req, res, next) {
@@ -39,6 +39,11 @@ export async function signup(req, res, next) {
 
   // res.setHeader("Authorization", "Bearer " + token);
   // return res.status(201).json({ username });
+
+  // 기존에 그냥 json body로 보냈던 token을 http only cookie로 보내기
+  setToken(res, token);
+
+  // cookie header로 보내면 REST APIs 이용하는 다른 client들은 사용불가함 -> 여전히 body 부분은 그래도 둠
   return res.status(201).json({ token, username });
 }
 
@@ -62,6 +67,7 @@ export async function login(req, res, next) {
 
       // token 발급
       const token = createJwtToken(user.id);
+      setToken(res, token);
       // res.setHeader("Authorization", "Bearer " + token);
       return res.status(200).json({ token, username });
     }
@@ -75,8 +81,18 @@ function createJwtToken(id) {
       id,
     },
     jwtSecretKey,
-    { expiresIn: jwtExpiresInDays }
+    { expiresIn: jwtExpiresInMs }
   );
+}
+
+function setToken(res, token) {
+  const options = {
+    maxAge: jwtExpiresInMs,
+    httpOnly: true,
+    sameSite: "none", // 서버와 클라이언트가 동일한 domain이 아니더라도 동작하도록 함. none일 때 secure 옵션을 true로.
+    secure: true,
+  };
+  res.cookie("token", token, options); // HTTP-ONLY COOKIE
 }
 
 export async function me(req, res, next) {
