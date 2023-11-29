@@ -1,8 +1,9 @@
 import express from "express";
+import "express-async-error";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
-import "express-async-error";
+import cookieParser from "cookie-parser";
 import dweetsRouter from "./router/dweets.js";
 import authRouter from "./router/auth.js";
 import { config } from "./config.js";
@@ -20,6 +21,7 @@ const corsOption = {
 
 // 미들웨어 설정
 app.use(express.json());
+app.use(cookieParser());
 app.use(helmet());
 app.use(cors(corsOption));
 app.use(morgan("tiny"));
