@@ -74,6 +74,13 @@ export async function login(req, res, next) {
   }
 }
 
+// 로그아웃 기능
+// 이 api를 호출하면, res의 cookie에 token 값을 아무것도 넣지 않고 보냄
+export async function logout(req, res, next) {
+  res.cookie("token", "");
+  res.status(200).json({ message: "User has been logged out" });
+}
+
 function createJwtToken(id) {
   // token 발급
   return jwt.sign(

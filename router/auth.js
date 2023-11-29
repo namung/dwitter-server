@@ -39,6 +39,8 @@ router.post("/signup", validateSignup, authController.signup);
 
 router.post("/login", validateCredential, authController.login);
 
+router.post("/logout", authController.logout);
+
 // 유저가 유효한지 아닌지 검증하는 api.
 // 정확히는, authentication을 수행함. 로그인 한지 안한지.
 // authorization은 권한부여.
