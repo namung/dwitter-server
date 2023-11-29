@@ -8,18 +8,32 @@ const jwtSecretKey = config.jwt.secretKey;
 // 비동기 callback 함수, 즉 비동기 미들웨어 함수
 // 로그인 했니?
 export const isAuth = async (req, res, next) => {
+  // 1. Check Cookie exits (for Browser)
+  // 2. Check Header (for Non-Browser Client)
+
+  let token;
+  // check the header first
+
   // request header의 Authorization key이 값을 받아 옴
   const authHeader = req.get("Authorization");
 
   // authorization request validation
-  // 값이 true이면서 값이 'Bearer '로 시작하는게 아니라면,
-  if (!(authHeader && authHeader.startsWith("Bearer "))) {
-    return res.status(401).json(AUTH_ERROR);
+  // 헤더에 토큰이 있다면,
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    // jwt token validation
+    // 'Breare ' 뒤의 jwt를 가져옴
+    token = authHeader.split(" ")[1];
   }
 
-  // jwt token validation
-  // 'Breare ' 뒤의 jwt를 가져옴
-  const token = authHeader.split(" ")[1];
+  // 헤더에 토큰이 없다면, check cookie
+  if (!token) {
+    token = req.cookies["token"];
+  }
+
+  // 그래도 token 값이 없다면 -> send auth error response
+  if (!token) {
+    return res.status(401).json(AUTH_ERROR);
+  }
 
   // jwt 유효성 검사 실행
   jwt.verify(token, jwtSecretKey, async (error, decoded) => {
