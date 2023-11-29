@@ -111,3 +111,12 @@ export async function me(req, res, next) {
     res.status(200).json({ toke: req.token, username: user.username });
   }
 }
+
+export async function csrfToken(req, res, next) {
+  const csrfToken = await generateCSRFToken();
+  res.status(200).json({ csrfToken });
+}
+
+async function generateCSRFToken() {
+  return bcrypt.hash(config.csrf.plainToken, 1); // sortRound 1인 이유: 강력한 암호문이 아닌, 약간의 안전망을 통해 사용자 req가 유효한것임을 판별하기 위함이기 때문에 조금 안전한 비밀번호 느낌으로 1을 함. 그리고 많이 하면 할수록 시간이 기하급수적으로 상승
+}

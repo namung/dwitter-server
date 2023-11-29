@@ -9,6 +9,7 @@ import authRouter from "./router/auth.js";
 import { config } from "./config.js";
 import { initSocket } from "./connection/socket.js";
 import { sequelize } from "./db/database.js";
+import { csrfCheck } from "./middleware/csrf.js";
 
 // 기초 서버 설정
 const app = express();
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(cors(corsOption));
 app.use(morgan("tiny"));
+app.use(csrfCheck); // csrf 검증 추가
 
 // 라우팅 설정
 // 1. Dweets

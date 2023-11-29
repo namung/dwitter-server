@@ -49,4 +49,6 @@ router.post("/logout", authController.logout);
 // isAuth 미들웨어는 모든 라우터에 사용 가능. -> request에 userId(고유 db index)가 있으면 너 허용된 사용자구나? 함.
 router.get("/me", isAuth, authController.me);
 
+router.get("/csrf-token", authController.csrfToken);
+
 export default router;
