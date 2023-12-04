@@ -10,6 +10,7 @@ import { config } from "./config.js";
 import { initSocket } from "./connection/socket.js";
 import { sequelize } from "./db/database.js";
 import { csrfCheck } from "./middleware/csrf.js";
+import rateLimit from "./middleware/rate-limiter.js";
 
 // 기초 서버 설정
 const app = express();
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(cors(corsOption));
 app.use(morgan("tiny"));
+app.use(rateLimit); // rate-limiter 추가
 app.use(csrfCheck); // csrf 검증 추가
 
 // 라우팅 설정
